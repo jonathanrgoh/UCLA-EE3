@@ -1,0 +1,93 @@
+const int rightMotor = 6; 
+const int leftMotor = 3;
+
+const int rightOut = 180; 
+const int leftOut = 120; //197 
+  
+const int rightSensorIn = A2; 
+const int middleSensorIn = A3; 
+const int leftSensorIn = A4; 
+
+int rightSensorValue = 200;
+int leftSensorValue = 0; 
+int middleSensorValue = 0; 
+
+int rightSensorOutput = 0; 
+int leftSensorOutput = 0; 
+int middleSensorOutput = 0; 
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600); 
+  pinMode(3, OUTPUT); 
+  pinMode(6, OUTPUT); 
+  pinMode(2, OUTPUT); 
+  pinMode(4, OUTPUT); 
+  pinMode(7, OUTPUT); 
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  /*digitalWrite(2, HIGH); 
+  digitalWrite(4, HIGH); 
+  digitalWrite(7, HIGH);*/ 
+  rightSensorValue = analogRead(rightSensorIn); 
+  middleSensorValue = analogRead(middleSensorIn); 
+  leftSensorValue = analogRead(leftSensorIn); 
+  
+  // Straight case 
+  if (middleSensorValue < 190 && rightSensorValue > 165 && leftSensorValue > 160) {
+    digitalWrite(4, HIGH); 
+    analogWrite(rightMotor, rightOut); 
+    analogWrite(leftMotor, leftOut); 
+    digitalWrite(4, LOW); 
+  }
+ 
+  // Must turn left case 
+  if (rightSensorValue > 165 && middleSensorValue > 190 && leftSensorValue < 160) {
+    digitalWrite(7, HIGH); 
+    analogWrite(rightMotor, rightOut+50); //50
+    analogWrite(leftMotor, 0);
+    digitalWrite(7, LOW); 
+  }
+  
+  //delay(33);
+   
+  //Must turn right case 
+  if (middleSensorValue > 190 && leftSensorValue > 160 && rightSensorValue < 165) {
+    digitalWrite(2, HIGH); 
+    analogWrite(rightMotor, 0); 
+    analogWrite(leftMotor, leftOut+35); //35
+    digitalWrite(2, LOW); 
+  }
+
+
+  //delay(33);
+  
+  // Stop Case 
+  if (middleSensorValue < 190 && rightSensorValue < 165 && leftSensorValue < 160) {
+    analogWrite(rightMotor, 0); 
+    analogWrite(leftMotor, 0); 
+    int num = 0; 
+    while (num != 10) {
+      digitalWrite(4, HIGH); 
+      digitalWrite(7, HIGH); 
+      digitalWrite(2, HIGH); 
+      num++; 
+      delay(500); 
+      digitalWrite(4, LOW); 
+      digitalWrite(7, LOW); 
+      digitalWrite(2, LOW);
+      delay(500); 
+     }
+  } 
+
+  /*Serial.println(rightSensorValue); 
+  Serial.println(middleSensorValue); 
+  Serial.println(leftSensorValue);
+  delay(2000);*/
+  
+  //analogWrite(rightMotor, 150); 
+  //analogWrite(leftMotor, 100);
+ 
+}
